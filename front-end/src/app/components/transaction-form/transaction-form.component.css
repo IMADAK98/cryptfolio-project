@@ -1,0 +1,31 @@
+
+
+:host ::ng-deep .p-inputnumber  
+.p-inputnumber-input{ 
+box-shadow: none; 
+color: #374151; 
+width: 100% !important; 
+object-fit: contain;
+}
+
+
+:host ::ng-deep .p-selectbutton .p-button{
+    width: 100%;
+}
+
+:host ::ng-deep .p-selectbutton {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+:host ::ng-deep .p-selectbutton .p-button.p-highlight .sell {
+ background-color: red;
+}
+
+:host ::ng-deep .p-selectbutton .p-button.p-highlight .buy {
+    background-color: green;
+   }
+
+
+   

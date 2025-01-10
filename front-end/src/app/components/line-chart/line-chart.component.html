@@ -1,0 +1,18 @@
+<div class="card flex flex-col justify-between h-full">
+  <div class="flex flex-row justify-center self-end">
+    <p-selectButton
+      [options]="stateOptions"
+      [(ngModel)]="value"
+      optionLabel="label"
+      optionValue="value"
+      (onChange)="onFilterChange($event)"
+    />
+  </div>
+
+  <p-chart
+    type="line"
+    [data]="data"
+    [options]="options"
+    [responsive]="true"
+  ></p-chart>
+</div>

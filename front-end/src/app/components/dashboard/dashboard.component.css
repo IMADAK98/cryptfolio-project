@@ -1,0 +1,68 @@
+/* your-component.component.css
+:host ::ng-deep .p-card {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    width: 20rem;
+    overflow-y: auto;
+  }
+
+
+  :host ::ng-deep .p-card-title { 
+ 
+    font-size: x-large !important;
+    text-align: center;
+    color: #374151;
+}  */
+
+
+
+
+
+/* :host ::ng-deep .p-card { */
+  /* box-shadow: 0 2px 4px rgba(0,0,0,.1); */
+  /* width: 12.25rem;
+  height : 12.25rem;
+  overflow-y: auto;
+  border-radius: 0;
+  margin-right: 1.25rem;
+  display: flex;
+  flex-wrap: wrap; */
+
+/* } */
+
+
+/* :host ::ng-deep .p-card-title { 
+
+  font-size: large;
+  text-align: center;
+  color: #374151;
+}  */
+
+
+
+/* :host ::ng-deep .p-card-body {
+
+background-color: #f9fafb !important;
+}  */
+
+
+/* .initial-color {
+  color: black;
+} */
+
+
+
+
+
+
+
+
+
+
+/* 
+:host ::ng-deep   .p-datatable .p-datatable-thead > tr > th {
+    color: black;
+    font-weight: 900;
+    background-color: aliceblue;
+    transition: all;
+} */

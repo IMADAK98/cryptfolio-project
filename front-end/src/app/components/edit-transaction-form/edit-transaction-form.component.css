@@ -1,0 +1,6 @@
+:host ::ng-deep .p-inputnumber .p-inputnumber-input {
+  box-shadow: none;
+  color: #374151;
+  width: 100% !important;
+  object-fit: contain;
+}

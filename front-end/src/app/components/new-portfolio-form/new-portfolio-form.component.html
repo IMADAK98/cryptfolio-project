@@ -1,0 +1,39 @@
+<form
+  [formGroup]="portfolioForm"
+  (ngSubmit)="onSubmit()"
+  class="flex flex-col items-center justify-center p-5 m-5 space-y-5 !w-auto"
+>
+  <div class="flex flex-col space-y-5 items-center justify-center">
+    <label for="portfolioName" class="block text-gray-600 font-medium mb-1"
+      >Portfolio Name
+    </label>
+    <input
+      type="text"
+      id="portfolioName"
+      placeholder="Enter your portfolio name"
+      formControlName="portfolioName"
+      pInputText
+      [ngClass]="{
+        'ng-invalid ng-dirty':
+          portfolioName?.invalid &&
+          (portfolioName?.dirty || portfolioName?.touched),
+      }"
+    />
+    @if (portfolioName?.errors?.["required"] && portfolioName?.touched) {
+      <small class="block p-error px-1"> A name is required</small>
+    }
+  </div>
+
+  <p-button
+    type="submit"
+    label="Create Portfolio"
+    [disabled]="!portfolioForm.valid"
+    [raised]="true"
+  ></p-button>
+  <!-- <button
+        type="submit"
+        class="gap-2 h-[2.50rem] w-[8rem] bg-gray-900 text-white rounded-md outline-none transition-all focus:scale-110 hover:scale-110 active:scale-105 hover:bg-gray-950 disabled:scale-100 disabled:bg-opacity-65"
+      >
+        Add
+      </button> -->
+</form>

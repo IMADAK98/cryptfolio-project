@@ -1,0 +1,371 @@
+<div class="sm:px-20 px-5 mt-20">
+  @defer (on timer(0.5s)) {
+    <div class="mt-8">
+      @if (portfolio$ | async; as portfolio) {
+        <!-- Main Container for Portfolio -->
+        <div class="flex flex-col font-bold" @slideInFromLeft>
+          <!-- Portfolio Name and Total Value -->
+          <!-- <h1 class="text-gray-400 font-semibold text-xl">{{ portfolio.name }} 🚀</h1> -->
+
+          <div class="flex flex-row justify-between flex-wrap gap-3 w-full">
+            @if (portfolio.assets.length > 0) {
+              <div class="flex flex-col font-bold">
+                <!-- Portfolio Name -->
+                <h1 class="text-3xl pb-3 pt-5">
+                  {{ portfolio.portfolioName | titlecase }}
+                </h1>
+
+                <!-- Card Container -->
+                <div
+                  class="flex flex-wrap gap-5 px-0 py-3 justify-center items-stretch"
+                >
+                  <!-- Current Balance Card -->
+                  <div
+                    class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center md:max-w-fit w-full"
+                  >
+                    <p class="text-gray-400">
+                      Current Balance
+                      <i
+                        class="pi pi-info-circle text-blue-500 ml-2"
+                        pTooltip="The current value of all your investments in this portfolio."
+                        tooltipPosition="top"
+                      ></i>
+                    </p>
+                    <div class="text-lg font-bold flex flex-col">
+                      {{ portfolio.totalValue | currency }}
+
+                      <span
+                        class="text-sm"
+                        [ngClass]="{
+                          'text-green-600': portfolio.totalPlPercent > 0,
+                          'text-red-600': portfolio.totalPlPercent < 0,
+                        }"
+                      >
+                        (
+                        {{
+                          portfolio.totalPlPercent >= 0
+                            ? (portfolio?.totalPlPercent | number: "1.2-2") +
+                              "% ↑"
+                            : (portfolio?.totalPlPercent | number: "1.2-2") +
+                              "% ↓"
+                        }})
+                      </span>
+                    </div>
+                    <p class="text-green-400 font-medium text-lg"></p>
+                  </div>
+
+                  <!-- capital Balance Card -->
+                  <div
+                    class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center md:max-w-fit w-full"
+                  >
+                    <p class="text-gray-400">
+                      Capital Invested
+                      <i
+                        class="pi pi-info-circle text-blue-500 ml-2"
+                        pTooltip="The total amount of money you initially invested in this portfolio."
+                        tooltipPosition="top"
+                      ></i>
+                    </p>
+                    <div class="text-lg font-bold">
+                      {{ portfolio.totalCapitalInvested | currency }}
+                    </div>
+                    <p class="text-green-400 font-medium text-lg"></p>
+                  </div>
+
+                  <!-- Profit/Loss Card -->
+                  <div
+                    class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center md:max-w-fit w-full"
+                  >
+                    <p class="text-gray-400">
+                      Profit/Loss
+                      <i
+                        class="pi pi-info-circle text-blue-500 ml-2"
+                        pTooltip="The total profit or loss from your investments in this portfolio."
+                        tooltipPosition="top"
+                      ></i>
+                    </p>
+                    @if (portfolio.totalProfitAndLossAmount > 0) {
+                      <span class="text-green-600 text-lg">
+                        +{{ portfolio.totalProfitAndLossAmount | currency }} 💸
+                      </span>
+                    } @else if (portfolio.totalProfitAndLossAmount < 0) {
+                      <span class="text-red-600 text-lg">
+                        {{ portfolio.totalProfitAndLossAmount | currency }} 🩸
+                      </span>
+                    } @else {
+                      <span class="text-grey-900 text-lg">
+                        {{ portfolio.totalProfitAndLossAmount | currency }}
+                      </span>
+                    }
+                  </div>
+
+                  <!-- Number of Assets Card -->
+                  <!-- <div
+                    class="flex flex-col p-4 bg-cyan-50rounded-md shadow-md items-center text-center"
+                  >
+                    <div class="text-gray-500">Number of Assets held</div>
+                    <p class="text-xl font-bold">
+                      {{ portfolio.assets.length }}
+                    </p>
+                  </div> -->
+                  @if (portfolioStats$ | async; as stats) {
+                    <div
+                      class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center"
+                    >
+                      <p class="text-gray-400">
+                        Top Performer
+                        <i
+                          class="pi pi-info-circle text-blue-500 ml-2"
+                          pTooltip="The asset in your portfolio that has achieved the highest returns."
+                          tooltipPosition="top"
+                        ></i>
+                      </p>
+
+                      <!-- Top Performer Details -->
+                      <div
+                        class="flex flex-row items-start justify-start space-x-3"
+                      >
+                        <img
+                          ngSrc="https://s2.coinmarketcap.com/static/img/coins/32x32/{{
+                            stats.topPerformerCoinId
+                          }}.png"
+                          width="25"
+                          height="25"
+                          alt="{{ stats.topPerformerName }}"
+                          priority="true"
+                        />
+                        <div class="text-xl font-bold">
+                          {{ stats.topPerformerSymbol | uppercase }}
+                        </div>
+                      </div>
+
+                      <!-- Value and Percentage Change -->
+                      <div class="flex flex-row items-center space-x-2">
+                        <!-- Value Change with Conditional Styling -->
+                        <p
+                          class="m-0"
+                          [ngClass]="{
+                            'text-green-600': stats.topPerformerValueChange > 0,
+                            'text-red-600': stats.topPerformerValueChange < 0,
+                          }"
+                        >
+                          {{ stats.topPerformerValueChange | currency }}
+                        </p>
+                        <!-- Percent Change with Conditional Styling -->
+                        <p
+                          [ngClass]="{
+                            'text-green-600':
+                              stats.topPerformerPercentChange > 0,
+                            'text-red-600': stats.topPerformerPercentChange < 0,
+                          }"
+                        >
+                          {{
+                            stats.topPerformerPercentChange | number: "1.2-2"
+                          }}%
+                        </p>
+                      </div>
+                    </div>
+
+                    <div
+                      class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center"
+                    >
+                      <p class="text-gray-400">
+                        Worst Performer
+                        <i
+                          class="pi pi-info-circle text-blue-500 ml-2"
+                          pTooltip="The asset in your portfolio that has experienced the largest losses."
+                          tooltipPosition="top"
+                        ></i>
+                      </p>
+
+                      <!-- Top Performer Details -->
+                      <div
+                        class="flex flex-row items-start justify-start space-x-3"
+                      >
+                        <img
+                          ngSrc="https://s2.coinmarketcap.com/static/img/coins/32x32/{{
+                            stats.worstPerformerCoinId
+                          }}.png"
+                          width="25"
+                          height="25"
+                          alt="{{ stats.worstPerformerName }}"
+                          priority="true"
+                        />
+                        <div class="text-xl font-bold">
+                          {{ stats.worstPerformerSymbol | uppercase }}
+                        </div>
+                      </div>
+
+                      <!-- Value and Percentage Change -->
+                      <div class="flex flex-row items-center space-x-2">
+                        <!-- Value Change with Conditional Styling -->
+                        <p
+                          class="m-0"
+                          [ngClass]="{
+                            'text-green-600':
+                              stats.worstPerformerValueChange > 0,
+                            'text-red-600': stats.worstPerformerValueChange < 0,
+                          }"
+                        >
+                          {{ stats.worstPerformerValueChange | currency }}
+                        </p>
+                        <!-- Percent Change with Conditional Styling -->
+                        <p
+                          [ngClass]="{
+                            'text-green-600':
+                              stats.worstPerformerValueChange > 0,
+                            'text-red-600': stats.worstPerformerValueChange < 0,
+                          }"
+                        >
+                          {{
+                            stats.worstPerformerPercentChange | number: "1.2-2"
+                          }}%
+                        </p>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            <!-- Action Buttons -->
+            <div
+              class="flex flex-row items-center justify-end space-x-2 ml-auto"
+            >
+              <div class="flex flex-wrap gap-3">
+                <!-- Add Transaction Button -->
+                <p-button
+                  (click)="showDialog()"
+                  icon="pi pi-spin  pi-bitcoin"
+                  label="Add Transaction"
+                  iconPos="right"
+                  [raised]="true"
+                ></p-button>
+              </div>
+
+              <!-- Options Button -->
+              <div class="">
+                <menu-actions
+                  (complete)="hideDialog()"
+                  [portfolioId]="portfolio.id"
+                ></menu-actions>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Transaction Dialog -->
+        <p-dialog [(visible)]="visible" [modal]="true" closable="true">
+          <ng-template pTemplate="headless">
+            <div
+              class="bg-white overflow-auto border-black border rounded-md sm:w-[35rem] w-full px-3 pt-0"
+            >
+              <div class="flex justify-end">
+                <button
+                  (click)="visible = !visible"
+                  class="p-2 m-1 text-xl font-semibold"
+                >
+                  x
+                </button>
+              </div>
+
+              <app-wizard (complete)="hideDialog()"></app-wizard>
+            </div>
+          </ng-template>
+        </p-dialog>
+
+        <!-- Charts -->
+        <div
+          class="flex flex-row justify-start gap-5 pt-3 flex-wrap sm:flex-nowrap w-full"
+          @slideInFromRight
+        >
+          @if (portfolio.assets.length > 0) {
+            <!-- First Chart -->
+            <div class="p-3 w-full lg:w-1/2 bg-white rounded-md shadow-md">
+              <app-line-chart></app-line-chart>
+            </div>
+
+            <!-- Second Column -->
+            <div class="flex flex-col space-y-5 w-full lg:w-1/2">
+              <!-- Pie Chart -->
+              <div class="bg-white rounded-md shadow-md p-3 h-fit w-full">
+                <app-pie-chart></app-pie-chart>
+              </div>
+
+              <!-- Bar Chart -->
+              <div class="bg-white rounded-md shadow-md p-3 h-full w-full">
+                <bar-chart></bar-chart>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (portfolio.assets.length > 0) {
+          <div class="bg-white rounded-md shadow-md mt-5">
+            <!-- Assets Table -->
+            <section id="assets" class="p-3 mt-3">
+              <h2 class="font-bold text-3xl text-gray-950">Assets</h2>
+              <app-assets-table (complete)="hideDialog()"> </app-assets-table>
+            </section>
+          </div>
+        } @else {
+          <!-- No Assets Placeholder -->
+          <div class="flex flex-col items-center justify-center space-y-5">
+            <img
+              ngSrc="/assets/no-assets-portfolio.png"
+              width="240"
+              height="240"
+              priority="true"
+            />
+            <h1 class="text-3xl font-bold text-gray-950">
+              This portfolio needs some final touches…
+            </h1>
+            <h2 class="text-lg font-semibold text-gray-500">
+              Add a coin to get started
+            </h2>
+            <p-button
+              (click)="showDialog()"
+              icon="pi pi-spin pi-bitcoin"
+              label="Add Coin"
+              iconPos="right"
+              [raised]="true"
+            ></p-button>
+          </div>
+        }
+      }
+    </div>
+  } @placeholder {
+    <div class="p-4 flex flex-col gap-5 mt-[7.25rem]">
+      <!-- Header Skeleton -->
+      <div class="flex flex-col gap-2">
+        <p-skeleton width="40%" height="2rem"></p-skeleton>
+        <p-skeleton width="30%" height="1.5rem"></p-skeleton>
+      </div>
+
+      <!-- Stats Skeleton (3 square cards) -->
+      <div class="flex flex-row gap-5 justify-between">
+        <p-skeleton
+          width="30%"
+          height="100px"
+          styleClass="rounded-md"
+        ></p-skeleton>
+        <p-skeleton
+          width="30%"
+          height="100px"
+          styleClass="rounded-md"
+        ></p-skeleton>
+        <p-skeleton
+          width="30%"
+          height="100px"
+          styleClass="rounded-md"
+        ></p-skeleton>
+      </div>
+
+      <!-- Main Chart Skeleton -->
+      <p-skeleton
+        width="100%"
+        height="300px"
+        styleClass="rounded-md"
+      ></p-skeleton>
+    </div>
+  }
+</div>

@@ -1,0 +1,120 @@
+<div class="w-full">
+  <form [formGroup]="wizForm" (ngSubmit)="onSubmit()">
+    <div class="flex flex-col h-full space-y-3">
+      <div>
+        <label for="action" class="block text-gray-600 font-medium">
+          Action</label
+        >
+        <p-selectButton
+          id="action"
+          formControlName="action"
+          [options]="stateOptions"
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="setAction($event.value)"
+          [ngClass]="getButtonClass()"
+        ></p-selectButton>
+        @if (action?.errors?.["required"] && action?.touched) {
+          <small class="p-error px-1"> Action is required</small>
+        }
+      </div>
+      <div>
+        <label for="date" class="block text-gray-600 font-medium">
+          Purchase Date
+        </label>
+        <p-calendar
+          formControlName="date"
+          appendTo="body"
+          placeholder="Pick a date"
+          dateFormat="dd.mm.yy"
+          [showIcon]="true"
+          [style]="{ width: '100%' }"
+          [maxDate]="today"
+        ></p-calendar>
+        @if (date?.errors?.["required"] && date?.touched) {
+          <small class="p-error px-1"> Date is required</small>
+        }
+      </div>
+
+      <div class="flex flex-row w-full space-x-3">
+        <div class="w-full flex flex-col">
+          <label for="amount" class="block text-gray-600 font-medium"
+            >Amount</label
+          >
+          <p-inputNumber
+            formControlName="amount"
+            id="amount"
+            inputId="integeronly"
+            placeholder="0.00"
+            mode="decimal"
+            [style]="{ width: '100%' }"
+            [maxFractionDigits]="3"
+          ></p-inputNumber>
+          @if (
+            (amount?.errors?.["required"] && amount?.touched) ||
+            amount?.value! <= 0
+          ) {
+            <small class="p-error px-1"> Amount is required</small>
+          }
+          <!-- @if (amount?.value! <= 0) {
+                  <small class="p-error px-1">
+                    Amount must be greater than 0</small
+                  >
+                } -->
+        </div>
+
+        <div class="w-full flex flex-col">
+          <label for="price" class="block text-gray-600 font-medium"
+            >Price $</label
+          >
+          <p-inputNumber
+            formControlName="price"
+            id="price"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            [maxFractionDigits]="5"
+            [style]="{ width: '100%' }"
+          >
+          </p-inputNumber>
+          @if (price?.errors?.["required"] && price?.touched) {
+            <small class="p-error px-1"> Price is required</small>
+          }
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col justify-center bg-gray-100 p-2 h-[5rem] rounded-md w-full"
+      >
+        @if (action?.value === ActionEnum.SELL) {
+          <span class="text-gray-600 font-medium text-medium"
+            >Total Received:</span
+          >
+          <span class="text-gray-900 text-xl font-semibold">{{
+            total?.value | currency
+          }}</span>
+        } @else {
+          <span class="text-gray-600 font-medium text-medium"
+            >Total Spent:</span
+          >
+          <span class="text-gray-900 text-xl font-semibold">{{
+            total?.value | currency
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="w-full flex flex-row justify-center mt-4 space-x-5">
+      <ng-content></ng-content>
+      <p-button
+        type="submit"
+        label="Add Transaction"
+        icon="pi pi-plus"
+        iconPos="right"
+        [disabled]="!wizForm.valid"
+        [text]="true"
+      ></p-button>
+    </div>
+  </form>
+</div>

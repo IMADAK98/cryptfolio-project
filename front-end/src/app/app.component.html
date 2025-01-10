@@ -1,0 +1,9 @@
+<main class="">
+  <app-header></app-header>
+
+  <loading-indicator />
+  <div [@routeAnimations]="prepareRoute(outlet)">
+    <p-toast></p-toast>
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
+</main>

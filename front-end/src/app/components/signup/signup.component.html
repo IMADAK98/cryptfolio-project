@@ -1,0 +1,110 @@
+<div class="min-h-screen m-0 justify-center items-center flex flex-col mt-8">
+  <div
+    class="bg-white shadow-lg border rounded-md px-8 py-8 sm:px-12 sm:py-10 lg:px-16 lg:py-12 max-w-md w-full z-50"
+  >
+    <h2 class="text-2xl font-semibold text-center mb-6">Sign Up</h2>
+    <form [formGroup]="profileForm" (ngSubmit)="handleSubmit()">
+      <div class="field p-fluid mt-4 mb-4">
+        <label for="firstName" class="block text-gray-600 font-medium mb-2"
+          >First name</label
+        >
+        <input
+          pInputText
+          id="firstName"
+          class="shadow w-full text-gray-700"
+          placeholder="Enter your first name"
+          formControlName="firstName"
+          [ngClass]="{
+            'ng-invalid': isInvalidAndTouched('firstNames'),
+            'ng-dirty': isInvalidAndTouched('firstName'),
+          }"
+        />
+        @if (firstName?.errors?.["required"] && firstName?.touched) {
+          <small id="username-help" class="p-error px-1"
+            >First name is required.</small
+          >
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="lastName" class="block text-gray-600 font-medium mb-2"
+          >Last name</label
+        >
+        <input
+          pInputText
+          id="lastName"
+          class="shadow w-full text-gray-700 ng-dirty"
+          placeholder="Enter your last name"
+          formControlName="lastName"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label for="email" class="block text-gray-600 font-medium mb-2"
+          >Email</label
+        >
+        <input
+          pInputText
+          id="email"
+          class="shadow w-full text-gray-700"
+          placeholder="Enter your Email"
+          formControlName="email"
+        />
+        @if (email?.errors?.["required"] && email?.touched) {
+          <small id="email-help" class="p-error px-1">Email is required.</small>
+        }
+        @if (email?.errors?.["email"] && email?.touched) {
+          <small id="email-help" class="p-error px-1">Email not valid</small>
+        }
+        @if (usedEmail) {
+          <small id="email-help" class="p-error px-1"
+            >Email address is already in use</small
+          >
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="block text-gray-600 font-medium mb-2"
+          >Password</label
+        >
+        <input
+          minlength="8"
+          pInputText
+          type="password"
+          id="password"
+          name="password"
+          placeholder="********"
+          formControlName="password"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+        @if (password?.errors?.["required"] && password?.touched) {
+          <small id="password-help" class="p-error px-1"
+            >Password is required</small
+          >
+        }
+        @if (password?.errors?.["minlength"]) {
+          <small id="password-help" class="p-error px-1"
+            >Minimum length is 8</small
+          >
+        }
+      </div>
+
+      <div class="flex items-center justify-between">
+        <p-button
+          label="Submit"
+          type="submit"
+          [rounded]="true"
+          [disabled]="!profileForm.valid"
+        ></p-button>
+        <p-toast></p-toast>
+        <a
+          routerLink="/login"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 transition"
+          >Already have an account?</a
+        >
+      </div>
+    </form>
+  </div>
+</div>

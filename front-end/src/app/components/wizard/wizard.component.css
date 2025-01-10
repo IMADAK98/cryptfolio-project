@@ -1,0 +1,23 @@
+ 
+/* :host ::ng-deep .p-selectbutton .p-button .p-label{
+    color: #374151;
+    font:bold
+} */
+
+
+:host ::ng-deep .p-stepper-panels {
+    width: 100%;
+}
+
+@media (max-width: 768px) { /* Adjust the max-width as needed for 'small screens' */
+    :host ::ng-deep .p-stepper-panels {
+        width: 100%; /* Full width on small screens */
+    }
+}
+@media (max-width: 640px) { /* Adjust the max-width as needed for 'small screens' */
+    :host ::ng-deep .p-stepper-panels {
+        width: 100%; /* Full width on small screens */
+       
+    }
+}
+

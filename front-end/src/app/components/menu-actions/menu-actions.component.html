@@ -1,0 +1,16 @@
+<p-menu #menu [model]="items" [popup]="true" appendTo="body" />
+<p-button
+  (click)="menu.toggle($event)"
+  icon="pi pi-ellipsis-v"
+  [raised]="true"
+  text="true"
+></p-button>
+
+<div class="flex items-center justify-center">
+  <p-toast appendTo="body"></p-toast>
+  <p-confirmDialog
+    [breakpoints]="{ '0px': '100vw', '768px': '50vw', '1024px': '30vw' }"
+    [style]="{ width: 'auto' }"
+    appendTo="body"
+  ></p-confirmDialog>
+</div>

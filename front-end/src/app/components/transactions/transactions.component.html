@@ -1,0 +1,270 @@
+<div class="flex flex-col items-start justify-center p-3 pt-16 sm:px-20 px-5">
+  <div class="my-[2rem]">
+    <p-button
+      class="text-2xl"
+      label="Back"
+      [link]="true"
+      icon=" pi pi-arrow-left"
+      text="true"
+      size="small"
+      (click)="onBack()"
+    >
+    </p-button>
+  </div>
+
+  @if (transactionPageData$ | async; as tp) {
+    <div class="flex flex-col mb-3 w-full">
+      <div class="flex flex-row gap-2">
+        <img
+          ngSrc="https://s2.coinmarketcap.com/static/img/coins/32x32/{{
+            tp?.coinId
+          }}.png"
+          width="32"
+          height="32"
+          class=""
+        />
+        <h2 class="text-xl font-medium text-gray-400">
+          {{ tp?.name }} ({{ tp.symbol }})
+        </h2>
+      </div>
+      <span class="text-4xl text-gray-900 font-bold">
+        {{ tp?.totalValue | currency }}
+      </span>
+      <!-- Add Transaction Button -->
+      <div class="flex flex-row justify-end">
+        <p-button
+          (click)="showAddDialog(tp.coinId)"
+          icon="pi pi-spin  pi-bitcoin"
+          label="Add Transaction"
+          iconPos="right"
+          [raised]="true"
+        ></p-button>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="flex flex-row flex-wrap gap-3 mt-3">
+      <div
+        class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center md:max-w-fit w-full"
+      >
+        <p class="text-gray-400">
+          Total Quantity
+          <i
+            class="pi pi-info-circle text-blue-500 ml-2"
+            pTooltip="The total number of assets you hold in this portfolio."
+            tooltipPosition="top"
+          ></i>
+        </p>
+
+        <span class="text-lg font-bold">{{ tp?.totalQuantity }}</span>
+      </div>
+
+      <div
+        class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center md:max-w-fit w-full"
+      >
+        <p class="text-gray-400">
+          Average Buying Price
+          <i
+            class="pi pi-info-circle text-blue-500 ml-2"
+            pTooltip="The average price at which you purchased all the assets in this portfolio."
+            tooltipPosition="top"
+          ></i>
+        </p>
+
+        <span class="text-lg font-bold">{{ tp?.avgBuyPrice | currency }}</span>
+      </div>
+
+      <div
+        class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center md:max-w-fit w-full"
+      >
+        <p class="text-gray-400">
+          Invested Amount
+          <i
+            class="pi pi-info-circle text-blue-500 ml-2"
+            pTooltip="The total amount you have spent to acquire assets in this portfolio."
+            tooltipPosition="top"
+          ></i>
+        </p>
+
+        <span class="text-lg font-bold">{{ tp?.initialValue | currency }}</span>
+      </div>
+
+      <div
+        class="flex flex-col p-4 bg-white rounded-md shadow-md items-center text-center md:max-w-fit w-full"
+      >
+        <p class="text-gray-400">
+          Profit/Loss
+          <i
+            class="pi pi-info-circle text-blue-500 ml-2"
+            pTooltip="The total profit or loss in your portfolio, calculated as the difference between the current value and the invested amount."
+            tooltipPosition="top"
+          ></i>
+        </p>
+
+        <div class="flex flex-col">
+          @if (tp?.totalProfitAndLossAmount! > 0) {
+            <span class="text-green-600 text-lg font-bold text-center"
+              >{{ tp?.totalProfitAndLossAmount | currency }}💸</span
+            >
+          } @else if (tp?.totalProfitAndLossAmount! < 0) {
+            <span class="text-red-600 text-lg font-bold text-center"
+              >{{ tp?.totalProfitAndLossAmount | currency }}🩸</span
+            >
+          } @else {
+            <span class="text-grey-900 text-lg font-bold text-center">
+              {{ tp?.totalProfitAndLossAmount }}</span
+            >
+          }
+          <span
+            class="text-sm font-medium"
+            [ngClass]="{
+              'text-green-600': tp.totalPlPercentage > 0,
+              'text-red-600': tp.totalPlPercentage < 0,
+            }"
+          >
+            (
+            {{
+              tp.totalPlPercentage >= 0
+                ? (tp?.totalPlPercentage | number: "1.2-2") + "% ↑"
+                : (tp?.totalPlPercentage | number: "1.2-2") + "% ↓"
+            }})
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-9 w-full bg-white rounded-md shadow-md p-3">
+      <h1 class="text-xl text-gray-950 font-semibold mb-5">Transactions</h1>
+
+      <p-table
+        styleClass="p-datatable-striped p-datatable-sm "
+        class="w-full"
+        [value]="tp.transactions"
+      >
+        <ng-template pTemplate="header">
+          <tr class="space-x-5">
+            <th class="text-black font-semibold">Type</th>
+            <th class="text-black font-semibold">Price</th>
+            <th class="text-black font-semibold">Amount</th>
+            <th class="text-black font-semibold">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-transactions>
+          <tr>
+            <td>
+              <div class="flex flex-col">
+                <span class="text-black font-semibold"
+                  >{{ transactions.action }}
+                </span>
+                <span class="text-black font-semibold">{{
+                  transactions.timestamp | date
+                }}</span>
+              </div>
+            </td>
+
+            <td>
+              <span class="text-black font-semibold">
+                {{ transactions.price | currency }}</span
+              >
+            </td>
+            <td>
+              <div class="flex flex-col">
+                <span class="text-black font-semibold">{{
+                  transactions.transactionAmount * transactions.price | currency
+                }}</span>
+                <!-- Display the transaction amount with style based on action -->
+                <span
+                  [class.text-green-500]="transactions.action === action.BUY"
+                  [class.text-red-500]="transactions.action === action.SELL"
+                >
+                  {{ getFormattedAmount(transactions) }}&nbsp;<span>{{
+                    tp.symbol
+                  }}</span>
+                </span>
+              </div>
+            </td>
+
+            <td>
+              <p-menu #menu [model]="items" [popup]="true" appendTo="body" />
+              <p-button
+                [raised]="true"
+                [rounded]="true"
+                [text]="true"
+                [outlined]="true"
+                size="small"
+                icon="pi pi-ellipsis-v"
+                (click)="handleMenuClick(transactions, $event)"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <p-dialog
+        [(visible)]="visible"
+        [modal]="true"
+        [closable]="true"
+        [style]="{ overflow: 'auto' }"
+        class="w-full sm:w-[50rem] overflow-auto"
+      >
+        <ng-template pTemplate="headless">
+          <div
+            class="bg-white sm:w-[30rem] w-full border border-black rounded-lg p-10"
+          >
+            <div class="flex justify-end">
+              <button
+                (click)="visible = !visible"
+                class="p-2 m-1 text-xl font-semibold"
+              >
+                x
+              </button>
+            </div>
+            <app-edit-transaction-form
+              [transactionId]="transactionId"
+              [assetId]="assetId"
+              (completed)="onCompletion($event)"
+            >
+            </app-edit-transaction-form>
+          </div>
+        </ng-template>
+      </p-dialog>
+    </div>
+  }
+
+  <p-dialog
+    [(visible)]="isAddDialogVisible"
+    [modal]="true"
+    [closable]="true"
+    [style]="{ overflow: 'auto' }"
+    class="w-full sm:w-[50rem] overflow-auto"
+  >
+    <ng-template pTemplate="headless">
+      <div
+        class="bg-white sm:w-[30rem] w-full border border-black rounded-lg p-10"
+      >
+        <div class="flex justify-end">
+          <button
+            (click)="isAddDialogVisible = !isAddDialogVisible"
+            class="p-2 m-1 text-xl font-semibold"
+          >
+            x
+          </button>
+        </div>
+        <app-transaction-form
+          [coinID]="coinID"
+          (completedSubmission)="handleFormCompletion($event)"
+        ></app-transaction-form>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <div class="flex items-center justify-center">
+    <p-toast />
+    <p-confirmDialog
+      [breakpoints]="{ '0px': '100vw' }"
+      [style]="{ width: 'auto' }"
+    >
+    </p-confirmDialog>
+  </div>
+</div>
