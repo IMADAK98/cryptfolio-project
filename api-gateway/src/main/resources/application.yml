@@ -1,0 +1,40 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: route_get
+          uri: http://httpbin.org:80
+          predicates:
+            - Path=/get
+
+        - id: route_user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/**
+
+        - id: route_portfolio_service
+          uri: lb://portfolio-service
+          predicates:
+            - Path=/portfolio-service/**
+
+        - id: route_exchange_service
+          uri: lb://exchange-service
+          predicates:
+            - Path=/exchange-service/**
+
+      globalcors:
+        corsConfigurations:
+          '[/**]': # Matches all paths
+            allowedOrigins:
+              - http://localhost:4200
+              - https://www.cryptfolio.pro
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - Content-Type
+              - Authorization
+            allowCredentials: true # Enable cookies if needed
